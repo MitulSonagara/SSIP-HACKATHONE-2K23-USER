@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp</title>
+</head>
+
+<body>
+    <form action="/signup" method="post">
+        <div class="row">
+            <div class="col-25">
+                <label>First name :</label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="firstName">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="poleNumber">last Name : </label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="lastName" id="poleNumber">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label>Phone Number : </label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="phoneNumber">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label>Email : </label>
+            </div>
+            <div class="col-75">
+                <input type="email" name="email">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label>Country : </label>
+            </div>
+            <div class="col-75">
+                <select name="country">
+                    <option value="none" selected disabled hidden>Select an Option</option>
+                    <option value="India">India</option>
+                    <option value="Russia">Russia</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit">Send Otp</button>
+        </div>
+    </form>
+</body>
+
+</html>
