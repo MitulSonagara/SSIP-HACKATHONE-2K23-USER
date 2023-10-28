@@ -4,23 +4,28 @@ const routes = express.Router();
 const signupRoute = require("./signUp")
 const otpController = require("../controller/otpController")
 
-routes.get("/verify-otp", async (req, res) => {
-    res.render("otp");
+routes.get("/verify-otp", (req, res) => {
+    const phoneNumber = req.query.phoneNumber;
+    res.render("otp", { phoneNumber, messages: req.flash() });
 });
 
 routes.post("/verify-otp", async (req, res) => {
-    const { phoneNumber,otp } = req.body;
+    const { phoneNumber, otp } = req.body;
 
     // Validate OTP
-    const isOTPValid = otpController.validateOTP(phoneNumber,otp);
+    const isOTPValid = await otpController.validateOTP(phoneNumber, otp);
+
+
+    console.log(isOTPValid)
 
     if (isOTPValid) {
         // Redirect to the login page
-        res.render('dashboard');
+        req.flash('success', 'OTP verified successfully. You are now logged in.');
+        res.redirect("/dashboard");
     } else {
-        // Display an error message or redirect to the signup page
-        res.render('signup', { error: 'Invalid OTP. Please try again.' });
+        req.flash('error', 'Invalid OTP. Please try again.');
+        res.redirect(`/verify-otp?phoneNumber=${phoneNumber}`);
     }
 })
 
-module.exports=routes
+module.exports = routes

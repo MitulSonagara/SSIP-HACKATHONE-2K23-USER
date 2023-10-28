@@ -22,7 +22,7 @@ const sendOTP = async (phoneNumber) => {
 };
 
 // Validate OTP
-const validateOTP = async (phoneNumber, otp) => {
+const validateOTP = async (phoneNumber,otp) => {
     try {
         const verifiedResponse = await twilio.verify
             .v2.services(process.env.TWILIO_SERVICE_NUMBER)
@@ -30,9 +30,11 @@ const validateOTP = async (phoneNumber, otp) => {
                 to: `+91${phoneNumber}`,
                 code: otp,
             });
-        console.log("otp verify successfully");
+        console.log(verifiedResponse.status);
+        return verifiedResponse.valid
     } catch (error) {
         console.log(error);
+        return false
     }
 };
 
