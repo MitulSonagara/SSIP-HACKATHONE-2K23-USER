@@ -13,6 +13,7 @@ const dashboardRoute = require("./routes/dashboard");
 const User = require("./models/users")
 const userRoute = require("./routes/user")
 const authMiddleware = require("./controller/authMiddleware")
+const feedbackRoute = require("./routes/feedback")
 
 
 const app = express();
@@ -35,13 +36,15 @@ app.use(passport.session());
 app.use("", dashboardRoute);  
 app.use("", mainRoute);
 app.use("", userRoute);
+app.use("", feedbackRoute);
 
 //hbs engine
 app.set("view engine", "hbs");
 app.set("views", "views");
 hbs.registerPartials("views/partials");
-
-
+hbs.registerHelper('eq', function (v1, v2) {
+  return v1 === v2;
+});
 
 // Configure Passport to use the LocalStrategy
 passport.use(new LocalStrategy(User.authenticate()));

@@ -1,0 +1,20 @@
+<!-- feedbackQuestions.hbs -->
+<form action="/feedback/submit" method="POST">
+    {{#each questions}}
+    <div class="question">
+        <h3>{{this.questionText}}</h3>
+        <input type="hidden" name="questions[{{this.questionId}}][questionText]" value="{{this.questionText}}">
+        {{#if (eq this.questionType 'text')}}
+        <input type="text" name="questions[{{this.questionId}}][response]" placeholder="Your answer" required>
+        {{else if (eq this.questionType 'multiple-choice')}}
+        {{#each this.options}}
+        <label>
+            <input type="radio" name="questions[{{../this.questionId}}][response]" value="{{this}}" required>
+            {{this}}
+        </label>
+        {{/each}}
+        {{/if}}
+    </div>
+    {{/each}}
+    <button type="submit">Submit Feedback</button>
+</form>
