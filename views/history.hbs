@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback History</title>
+    <style>
+        .feedback-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            box-shadow: 2px 2px 5px #aaa;
+            background: #f9f9f9;
+        }
+
+        .feedback-card h3 {
+            color: #333;
+        }
+
+        .feedback-card p {
+            color: #777;
+        }
+
+        @media screen and (max-width: 600px) {
+            .feedback-card {
+                padding: 5px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Feedback History</h1>
+    
+    {{#each feedbackHistory}}
+    <div class="feedback-card">
+        <h3>Date: {{this.submissionDate}} | Time: {{this.submissionTime}}</h3>
+        <p>Responses:</p>
+        <ul>
+            {{#each this.feedback}}
+            <li>{{this.questionText}}: {{this.response}}</li>
+            {{/each}}
+        </ul>
+    </div>
+    {{/each}}
+</body>
+</html>

@@ -14,7 +14,7 @@ const User = require("./models/users")
 const userRoute = require("./routes/user")
 const authMiddleware = require("./controller/authMiddleware")
 const feedbackRoute = require("./routes/feedback")
-
+const historyRoute = require("./routes/history")
 
 const app = express();
 
@@ -37,6 +37,7 @@ app.use("", dashboardRoute);
 app.use("", mainRoute);
 app.use("", userRoute);
 app.use("", feedbackRoute);
+app.use("", historyRoute);
 
 //hbs engine
 app.set("view engine", "hbs");

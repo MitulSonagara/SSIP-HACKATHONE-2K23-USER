@@ -66,5 +66,11 @@ router.post('/login', passport.authenticate('local', {
     res.redirect("/dashboad")
 });
 
+router.get('/logout', (req, res) => {
+    req.logout(() => {
+        res.redirect('/login');
+    }); // Passport.js logout
+    // Redirect to the login page or any other page you prefer
+});
 
 module.exports = router;
