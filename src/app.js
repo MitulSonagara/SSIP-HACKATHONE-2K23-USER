@@ -4,12 +4,15 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const session = require("express-session")
 const flash = require("connect-flash")
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
-const signupRoute = require("./routes/signUp");
+
 const mainRoute = require("./routes/main")
-const otpRoute = require("./routes/otp")
 const dashboardRoute = require("./routes/dashboard");
-const loginRoute = require("./routes/login")
+const User = require("./models/users")
+const userRoute = require("./routes/user")
+const authMiddleware = require("./controller/authMiddleware")
 
 
 const app = express();
@@ -17,24 +20,33 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static("public"));
 
-app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: true
-}));
 app.use(flash());
 
+app.use(session({
+  secret: 'your-secdcscdsret-key', // Change this to a strong, random string
+  resave: false,
+  saveUninitialized: false,
+}));
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 //routes
-app.use("", signupRoute);   
-app.use("", otpRoute);  
 app.use("", dashboardRoute);  
 app.use("", mainRoute);
-app.use("", loginRoute);
+app.use("", userRoute);
 
 //hbs engine
 app.set("view engine", "hbs");
 app.set("views", "views");
 hbs.registerPartials("views/partials");
+
+
+
+// Configure Passport to use the LocalStrategy
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //DataBase Connection
 main().catch((err) => console.log(err));
