@@ -29,41 +29,32 @@ router.post('/signup', (req, res, next) => {
             return next(err);
         }
         // Registration successful, redirect to OTP verification page
-        res.redirect(`/verify-otp?phoneNumber=${phoneNumber}`);
+        res.redirect(`/login`);
     });
 });
 
-// OTP Verification Route
-router.get('/verify-otp', (req, res) => {
-    const phoneNumber = req.query.phoneNumber;
-    res.render("otp", { phoneNumber });
-});
-
-router.post('/verify-otp', async (req, res) => {
-
-    const { phoneNumber, otp } = req.body;
-
-    // Validate OTP
-    const isOTPValid = await otpController.validateOTP(phoneNumber, otp);
-
-
-    if (isOTPValid) {
-        res.redirect('/login');
-    } else {
-        res.redirect('/signup');
-    }
-});
 
 router.get("/login", (req, res) => {
-    res.render("login")
+    const { district, station } = req.query;
+
+    res.render("login", { district, station })
 })
 // Login Route
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/dashboard',
+
     failureRedirect: '/login',
     failureFlash: false, // Enable flash messages for login failure
 }), (req, res) => {
-    res.redirect("/dashboad")
+    const { district, station } = req.body
+    
+    if (!district & !station) {
+        res.redirect("/dashboard")
+    }
+    else {
+        res.redirect(`/feedback-form?district=${district}&station=${station}`)
+    }
+
+    
 });
 
 router.get('/logout', (req, res) => {

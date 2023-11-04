@@ -3,6 +3,8 @@ const moment = require('moment-timezone');
 
 const feedbackResponseSchema = new mongoose.Schema({
     username: String,
+    firstName: String,
+    lastName: String,
     district: String,
     station: String,
     feedback: [
@@ -11,6 +13,7 @@ const feedbackResponseSchema = new mongoose.Schema({
             response: String,
         },
     ],
+    remarks: String,
     submissionDate: {
         type: String, // Store the date as a string
     },

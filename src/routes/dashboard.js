@@ -4,7 +4,7 @@ const passport = require("passport")
 const { ensureAuthenticated } = require("../controller/authMiddleware")
 
 // Define a route to render the dashboard
-router.get('/dashboard', ensureAuthenticated, (req, res) => {
+router.get('/dashboard',  (req, res) => {
     // This route is protected; only authenticated users can access it
     res.render('dashboard'); // Render your dashboard template or perform other actions
 });

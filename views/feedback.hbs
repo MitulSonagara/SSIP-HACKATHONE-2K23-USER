@@ -1,20 +1,127 @@
-<!-- feedbackQuestions.hbs -->
-<form action="/feedback/submit" method="POST">
-    {{#each questions}}
-    <div class="question">
-        <h3>{{this.questionText}}</h3>
-        <input type="hidden" name="questions[{{this.questionId}}][questionText]" value="{{this.questionText}}">
-        {{#if (eq this.questionType 'text')}}
-        <input type="text" name="questions[{{this.questionId}}][response]" placeholder="Your answer" required>
-        {{else if (eq this.questionType 'multiple-choice')}}
-        {{#each this.options}}
-        <label>
-            <input type="radio" name="questions[{{../this.questionId}}][response]" value="{{this}}" required>
-            {{this}}
-        </label>
-        {{/each}}
-        {{/if}}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+</head>
+
+<body>
+    <div class="row justify-content-md-center my-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Give Your Valuable Feedback</h2>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <form action="/feedback/submit" method="POST">
+                            <div class="form-group">
+                                <div id="districtField">
+                                    <label for="district">Select District:</label>
+                                    <select name="district" id="district" onchange="populateStations()"
+                                        class="form-control">
+                                        <option value="" disabled selected required>Select a district</option>'
+                                        {{#each districts}}
+                                        <option value="{{this.district}}">{{this.district}}</option>
+                                        {{/each}}
+                                    </select><br>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div id="policeStationField">
+                                    <label for="policeStation">Select Police Station:</label>
+                                    <select name="policeStation" id="policeStation" class="form-control">
+                                        <option value="{{this.name}}">{{this.name}}</option>
+                                        <!-- Police station options will be dynamically populated based on district selection -->
+                                    </select><br>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                            {{#each questions}}
+                            <div class="question">
+                                <label>{{this.questionText}}</label>
+                                <input type="hidden" name="questions[{{this.questionId}}][questionText]"
+                                    value="{{this.questionText}}" class="form-control">
+                                {{#if (eq this.questionType 'text')}}
+                                <input type="text" name="questions[{{this.questionId}}][response]"
+                                    placeholder="Your answer" required class="form-control">
+                                {{else if (eq this.questionType 'multiple-choice')}}
+                                <select name="questions[{{this.questionId}}][response]" required class="form-control">
+                                    <option value="" selected disabled>Select an option</option>
+                                    {{#each this.options}}
+                                    <option value="{{this}}">{{this}}</option>
+                                    {{/each}}
+                                </select>
+                                {{/if}}
+                                <br>
+                            </div>
+                            {{/each}}
+                            </div>
+
+                            <label for="comments">Remarks:</label>
+                            <input name="comments" id="comments" class="form-control"></input>
+                            <br>
+                            <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    {{/each}}
-    <button type="submit">Submit Feedback</button>
-</form>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script>
+        function populateStations() {
+            const districtSelect = document.getElementById('district');
+            const stationSelect = document.getElementById('policeStation');
+            const selectedDistrict = districtSelect.value;
+            // Clear the station dropdown
+            stationSelect.innerHTML = '<option value="" disabled selected required>Select a station</option>';
+
+            if (selectedDistrict) {
+                // Fetch the police stations for the selected district from the server
+                fetch(`/getPoliceStations/${selectedDistrict}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(station => {
+                            const option = document.createElement('option');
+                            option.value = station;
+                            option.textContent = station;
+                            stationSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+<!-- feedbackQuestions.hbs -->
