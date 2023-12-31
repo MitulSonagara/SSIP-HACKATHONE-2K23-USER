@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const User = require('../models/users');
-const otpController = require("../controller/otpController")
+const connectEnsureLogin = require('connect-ensure-login');
 
 router.get("/signup", (req, res) => {
     res.render("signup")
@@ -20,9 +20,6 @@ router.post('/signup', (req, res, next) => {
         // Add other user data
     });
 
-    const phoneNumber = req.body.phoneNumber
-    otpController.sendOTP(phoneNumber)
-
     User.register(newUser, req.body.password, (err) => {
         if (err) {
             // Handle registration error
@@ -35,27 +32,20 @@ router.post('/signup', (req, res, next) => {
 
 
 router.get("/login", (req, res) => {
-    const { district, station } = req.query;
 
-    res.render("login", { district, station })
+    res.render("login")
 })
 // Login Route
-router.post('/login', passport.authenticate('local', {
-
-    failureRedirect: '/login',
-    failureFlash: false, // Enable flash messages for login failure
-}), (req, res) => {
-    const { district, station } = req.body
-    
-    if (!district & !station) {
-        res.redirect("/dashboard")
+router.post(
+    '/login',
+    passport.authenticate('local', {
+        failureRedirect: '/login',
+        successRedirect: '/dashboard',
+    }),
+    (req, res) => {
+        console.log(req.user);
     }
-    else {
-        res.redirect(`/feedback-form?district=${district}&station=${station}`)
-    }
-
-    
-});
+);
 
 router.get('/logout', (req, res) => {
     req.logout(() => {

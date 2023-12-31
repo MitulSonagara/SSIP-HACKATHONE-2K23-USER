@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport")
-const { ensureAuthenticated } = require("../controller/authMiddleware")
+const connectEnsureLogin = require('connect-ensure-login');
+const otpController = require("../controller/otpController")
 
 // Define a route to render the dashboard
-router.get('/dashboard',  (req, res) => {
+router.get('/dashboard', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     // This route is protected; only authenticated users can access it
     res.render('dashboard'); // Render your dashboard template or perform other actions
 });

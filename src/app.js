@@ -26,18 +26,14 @@ app.use(flash());
 app.use(session({
   secret: 'your-secdcscdsret-key', // Change this to a strong, random string
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
 }));
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
 //routes
-app.use("", dashboardRoute);  
-app.use("", mainRoute);
-app.use("", userRoute);
-app.use("", feedbackRoute);
-app.use("", historyRoute);
+
 
 //hbs engine
 app.set("view engine", "hbs");
@@ -48,9 +44,15 @@ hbs.registerHelper('eq', function (v1, v2) {
 });
 
 // Configure Passport to use the LocalStrategy
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+app.use("", dashboardRoute);  
+app.use("", mainRoute);
+app.use("", userRoute);
+app.use("", feedbackRoute);
+app.use("", historyRoute);
 
 //DataBase Connection
 main().catch((err) => console.log(err));
